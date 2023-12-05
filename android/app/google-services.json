@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "285036461121",
+    "project_id": "betabooks-b8ec9",
+    "storage_bucket": "betabooks-b8ec9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285036461121:android:a028a04d1b1fa1aab91ac0",
+        "android_client_info": {
+          "package_name": "com.example.beta_books"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaQlcz6RZtwOX-C8L3Mm2pmZCDDozzfsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
