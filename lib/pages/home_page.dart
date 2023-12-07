@@ -96,7 +96,9 @@ class _HomePageState extends State<HomePage> {
                                       image: NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!) ??,
                                     ),
                                     */
-                                    Text(FirebaseAuth.instance.currentUser!.displayName!) ?? Text('User'),
+                                    FirebaseAuth.instance.currentUser!.displayName != null
+                                    ? Text(FirebaseAuth.instance.currentUser!.displayName!) 
+                                    : const Text('User'),
                                   ],
                                 ),
                               ),
