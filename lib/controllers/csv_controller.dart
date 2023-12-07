@@ -26,7 +26,8 @@ class CSVController {
       );
       books.add(book);
     }
-
+   
+    books.removeAt(0);
     return books; 
   }
 }
