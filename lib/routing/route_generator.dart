@@ -6,10 +6,40 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:beta_books/pages/error_page.dart';
 import 'package:beta_books/pages/home_page.dart';
+import 'package:beta_books/pages/videos_page.dart';
+import 'package:beta_books/pages/calendar_page.dart';
+import 'package:beta_books/pages/settings_page.dart';
+import 'package:beta_books/pages/shopping_page.dart';
 
 class RouteNavigator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case home: 
+        return MaterialPageRoute<HomePage>(
+          builder: (context) =>
+            const HomePage()
+        ); 
+      case videos: 
+        return MaterialPageRoute<VideosPage>(
+          builder: (context) =>
+            const VideosPage()
+        ); 
+      case calendar: 
+        return MaterialPageRoute<CalendarPage>(
+          builder: (context) =>
+            const CalendarPage()
+        ); 
+      case userSettings: 
+        return MaterialPageRoute<SettingsPage>(
+          builder: (context) =>
+            const SettingsPage()
+        ); 
+      case shopping: 
+        return MaterialPageRoute<ShoppingPage>(
+          builder: (context) =>
+            const ShoppingPage()
+        ); 
+
       case signin:
         return MaterialPageRoute<SignInScreen>(
           builder: (context) =>
@@ -76,11 +106,6 @@ class RouteNavigator {
                 })
               ],
             )
-        );
-      case home: 
-        return MaterialPageRoute<HomePage>(
-          builder: (context) =>
-            HomePage()
         );
       default:
         return MaterialPageRoute<ErrorPage>(

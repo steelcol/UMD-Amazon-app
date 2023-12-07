@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
 import 'package:beta_books/routing/routes.dart';
@@ -74,10 +75,60 @@ class _HomePageState extends State<HomePage> {
                     title: const Text("BetaBooks"),
                     actions: [
                       IconButton(
-                        onPressed: () => Navigator.pushNamed(context, profile),
-                        icon: const Icon(Icons.account_circle_sharp),
+                        onPressed: () => Navigator.of(context).pushNamed(shopping),
+                        icon: const Icon(Icons.shopping_cart),
                       ),
                     ],
+                  ),
+                  drawer: Drawer(
+                    child: CustomScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      slivers: <Widget> [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              DrawerHeader(
+                                child: Column(
+                                  children: [
+                                  /*
+                                    Image(
+                                      image: NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!) ??,
+                                    ),
+                                    */
+                                    Text(FirebaseAuth.instance.currentUser!.displayName!) ?? Text('User'),
+                                  ],
+                                ),
+                              ),
+                              ListTile(
+                                title: const Text('Account'),
+                                onTap: () => Navigator.of(context).pushNamed(profile),
+                              ),
+                              ListTile(
+                                title: const Text('Calendar'),
+                                onTap: () => Navigator.of(context).pushNamed(calendar),
+                              ),
+                              ListTile(
+                                title: const Text('Videos'),
+                                onTap: () => Navigator.of(context).pushNamed(videos),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ListTile(
+                              title: const Text('Settings'),
+                              onTap: () {
+
+                              },
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
                   ),
                   body: Center(
                     child: ListView.builder(
@@ -85,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                       itemCount: books.length,
                       itemBuilder: (context, index) => _buildBookCard(index),
                     )
-                  ),
+                  ),  
                 );
               }),
             );
