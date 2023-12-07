@@ -123,9 +123,7 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.bottomCenter,
                             child: ListTile(
                               title: const Text('Settings'),
-                              onTap: () {
-
-                              },
+                              onTap: () => Navigator.of(context).pushNamed(userSettings),
                             ),
                           ),
                         ),
