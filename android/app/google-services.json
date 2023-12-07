@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:285036461121:android:a028a04d1b1fa1aab91ac0",
+        "mobilesdk_app_id": "1:285036461121:android:8b9414bab70bcfe4b91ac0",
         "android_client_info": {
           "package_name": "com.example.beta_books"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "285036461121-msmo1t9v0tphksthdp1fnr0berrm7i2p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDaQlcz6RZtwOX-C8L3Mm2pmZCDDozzfsk"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285036461121-msmo1t9v0tphksthdp1fnr0berrm7i2p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "285036461121-4cpdpobd0vdu6ql7u3dnlc5q4prqedcl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.betaBooks.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
