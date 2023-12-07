@@ -10,6 +10,31 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+// Allows the passing down of data throught the widget tree
+// Use like this
+// BooksData.of(innerContext).message, 
+class BooksData extends InheritedWidget {
+  const BooksData({
+    Key? key,
+    required this.childWidget,
+    required this.books
+  }) : super(key:key, child: childWidget);
+
+  final Widget childWidget;
+
+  // Book data
+  final List<Book> books;
+
+  static BooksData of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<BooksData>()!;
+  }
+
+  @override
+  bool updateShouldNotify(BooksData oldWidget) {
+    return oldWidget.books != books;
+  }
+}
+
 class _HomePageState extends State<HomePage> {
 
   List<Book> books = [];
@@ -40,23 +65,29 @@ class _HomePageState extends State<HomePage> {
           else if (snapshot.hasData) {
             books = snapshot.data as List<Book>;
 
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text("BetaBooks"),
-                actions: [
-                  IconButton(
-                    onPressed: () => Navigator.pushNamed(context, profile),
-                    icon: const Icon(Icons.account_circle_sharp),
+            return BooksData(
+              books: books,
+              childWidget: Builder(
+              builder: (BuildContext innerContext) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text("BetaBooks"),
+                    actions: [
+                      IconButton(
+                        onPressed: () => Navigator.pushNamed(context, profile),
+                        icon: const Icon(Icons.account_circle_sharp),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              body: Center(
-                child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),  
-                  itemCount: books.length,
-                  itemBuilder: (context, index) => _buildBookCard(index),
-                )
-              ),
+                  body: Center(
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),  
+                      itemCount: books.length,
+                      itemBuilder: (context, index) => _buildBookCard(index),
+                    )
+                  ),
+                );
+              }),
             );
           }
         }
