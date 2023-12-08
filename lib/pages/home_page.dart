@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
-import 'package:beta_books/routing/routes.dart';
-import 'package:beta_books/inherited/books_inherited.dart';
+import 'package:beta_books/routing/routes.dart'; import 'package:beta_books/inherited/books_inherited.dart';
 import 'package:beta_books/args/book_args.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -159,7 +158,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(9),
       child: TextField(
         controller: SearchController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: 'Enter title, author, or ISBN',
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
@@ -209,7 +208,9 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
-                  book.price ?? 'Not provided',
+                  book.price != null 
+                  ? '\$${book.price}'
+                  : 'Not provided',
                   style: const TextStyle(
                     fontSize: 10.0,
                     fontWeight: FontWeight.w300,

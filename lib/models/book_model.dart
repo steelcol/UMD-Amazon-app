@@ -4,13 +4,13 @@ class Book {
   final String? author;
   final String? isbn10;
   final String? isbn13;
-  final String? publishDate;
-  final String? edition;
+  final DateTime? publishDate;
+  final int? edition;
   final String? bestSeller;
   final String? topRated;
-  final String? rating;
-  final String? reviewCount;
-  final String? price;
+  final double? rating;
+  final int? reviewCount;
+  final double? price;
 
   Book({
     required this.title,
