@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
-import 'package:beta_books/routing/routes.dart';
-import 'package:beta_books/inherited/books_inherited.dart';
+import 'package:beta_books/routing/routes.dart'; import 'package:beta_books/inherited/books_inherited.dart';
 import 'package:beta_books/args/book_args.dart';
 
 class HomePage extends StatefulWidget {
@@ -144,15 +143,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-<<<<<<< HEAD
-  Widget _buildBookCard(int index) {  
-=======
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.all(9),
       child: TextField(
         controller: SearchController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: 'Enter title, author, or ISBN',
           prefixIcon: Icon(Icons.search),
           border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
@@ -164,7 +160,6 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBookCard(int index) {
 
     Book book = searchedBooks[index];
->>>>>>> 28efd664c049723a6b71321e72753538f87949a3
 
     return SizedBox(
       height: book.title != null && book.title!.length > 50
@@ -203,13 +198,9 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
-<<<<<<< HEAD
-                  books[index].price != null
-                  ? '\$${books[index].price}'
+                  book.price != null 
+                  ? '\$${book.price}'
                   : 'Not provided',
-=======
-                  book.price ?? 'Not provided',
->>>>>>> 28efd664c049723a6b71321e72753538f87949a3
                   style: const TextStyle(
                     fontSize: 10.0,
                     fontWeight: FontWeight.w300,
