@@ -133,21 +133,33 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           _buildSearchBar(),
-          Expanded(
+          if (searchedBooks.isEmpty) ... [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              child: Text(
+                'No results found',
+                style: TextStyle(fontSize: 12, color: Theme.of(context).primaryColorLight),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: _buildDataSetAuthorCard(),
+            ),
+          ] else Expanded(
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: searchedBooks.length + 1,
               itemBuilder: (context, index) {
-              // If not last item continue to build book cards
-              if (index < searchedBooks.length) {
-                return _buildBookCard(index);
-              } else {
-                // Build the author footnote if it's the last card
-                return _buildDataSetAuthorCard();
-              }
-            },
-          ),
+                // If not last item continue to build book cards
+                if (index < searchedBooks.length) {
+                  return _buildBookCard(index);
+                } else {
+                  // Build the author footnote if it's the last card
+                  return _buildDataSetAuthorCard();
+                }
+              },
             ),
+          ),
         ],
       ),
     );
