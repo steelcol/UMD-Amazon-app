@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:beta_books/inherited/books_inherited.dart';
+import 'package:beta_books/args/book_args.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -101,7 +102,7 @@ class _HomePageState extends State<HomePage> {
       child: InkWell(
         onTap: () => Navigator.of(context).pushNamed(
           details,
-          arguments: books[index]
+          arguments: BookArgs(book: books[index])
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),

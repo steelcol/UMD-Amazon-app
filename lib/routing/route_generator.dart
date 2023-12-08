@@ -11,6 +11,7 @@ import 'package:beta_books/pages/calendar_page.dart';
 import 'package:beta_books/pages/settings_page.dart';
 import 'package:beta_books/pages/shopping_page.dart';
 import 'package:beta_books/pages/details_page.dart';
+import 'package:beta_books/pages/compare_page.dart';
 import 'package:beta_books/args/book_args.dart';
 
 class RouteNavigator {
@@ -36,8 +37,7 @@ class RouteNavigator {
           builder: (context) =>
             const SettingsPage()
         ); 
-      case shopping: 
-        return MaterialPageRoute<ShoppingPage>(
+      case shopping: return MaterialPageRoute<ShoppingPage>(
           builder: (context) =>
             const ShoppingPage()
         ); 
@@ -46,6 +46,14 @@ class RouteNavigator {
         return MaterialPageRoute<DetailsPage>(
           builder: (context) =>
             DetailsPage(
+              book: args.book
+            )
+          );
+      case compare:
+        BookArgs args = settings.arguments as BookArgs;
+        return MaterialPageRoute<ComparePage>(
+          builder: (context) =>
+            ComparePage(
               book: args.book
             )
           );
