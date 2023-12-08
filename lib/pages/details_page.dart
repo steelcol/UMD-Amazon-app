@@ -30,10 +30,10 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
             SizedBox(height: 8),
             Text(
-              'Price: ${widget.book.price ?? 'N/A'}',
+              'Price: \$${widget.book.price ?? 'N/A'}',
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 12),
             Text(
               'Rating: ${widget.book.rating ?? 'N/A'}/5',
               style: TextStyle(fontSize: 18),
@@ -58,6 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 child: const Text('Compare Editions'),
               ),
             ),
+            Spacer(), // Added Spacer to push button to the top
           ],
         ),
       ),
