@@ -3,6 +3,7 @@ import 'package:beta_books/models/book_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/routing/route_generator.dart';
@@ -21,6 +22,12 @@ Future<void> main() async {
     GoogleProvider(
       clientId: '285036461121-msmo1t9v0tphksthdp1fnr0berrm7i2p.apps.googleusercontent.com'
     ),
+  ]);
+
+  // Lock orientation
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
   ]);
 
   runApp(const BetaBooks());
@@ -52,9 +59,14 @@ class _BetaBooksState extends State<BetaBooks> {
         // Error 
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                '${snapshot.error} occured',
+            print(snapshot.error);
+            return MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: Text(
+                    '${snapshot.error} occured',
+                  ),
+                ),
               ),
             );
           }

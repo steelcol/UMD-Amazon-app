@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBookCard(int index) {  
+
     return SizedBox(
       height: books[index].title != null && books[index].title!.length > 50
       ? MediaQuery.of(context).size.height/6
@@ -132,7 +133,9 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
-                  books[index].price ?? 'Not provided',
+                  books[index].price != null
+                  ? '\$${books[index].price}'
+                  : 'Not provided',
                   style: const TextStyle(
                     fontSize: 10.0,
                     fontWeight: FontWeight.w300,
