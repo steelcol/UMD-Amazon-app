@@ -4,6 +4,7 @@ import 'package:beta_books/models/book_model.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:beta_books/inherited/books_inherited.dart';
 import 'package:beta_books/args/book_args.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -136,9 +137,18 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: searchedBooks.length,
-              itemBuilder: (context, index) => _buildBookCard(index),),
+              itemCount: searchedBooks.length + 1,
+              itemBuilder: (context, index) {
+              // If not last item continue to build book cards
+              if (index < searchedBooks.length) {
+                return _buildBookCard(index);
+              } else {
+                // Build the author footnote if it's the last card
+                return _buildDataSetAuthorCard();
+              }
+            },
           ),
+            ),
         ],
       ),
     );
@@ -212,4 +222,38 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Future<void> openURL() async {
+    const url = 'https://www.kaggle.com/uzair01';
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not open $uri';
+    }
+  }
+
+  Widget _buildDataSetAuthorCard() {
+    return InkWell(
+      onTap: openURL,
+      child: Card(
+        color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Dataset created by Muhammad Uzair Khan',
+                style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColorLight.withOpacity(0.25)),
+              ),
+              Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColorLight.withOpacity(0.25),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }
