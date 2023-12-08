@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
   void _onSearchFieldChange()
   {
     filterBooks(SearchController.text);
+    _sort(searchedBooks, dropdownValue);
   }
 
   void filterBooks(String search) {
@@ -66,8 +67,6 @@ class _HomePageState extends State<HomePage> {
           return title.contains(search.toLowerCase()) ||
               author.contains(search.toLowerCase()) ||
               isbn13.contains(search.toLowerCase());}).toList();
-
-        _sort(searchedBooks, dropdownValue);
       });
     } else {
       setState(() {
@@ -150,12 +149,11 @@ class _HomePageState extends State<HomePage> {
         ),
       body: Column(
         children: [
+          _buildSearchBar(),
           Row(
             children: [
-              Expanded(
-                child: _buildSearchBar(),
-              ),
-              _buildSortDropdownButton()
+              _buildSortDropdownButton(),
+              const Spacer(),
             ]
           ),
           Expanded(
@@ -184,24 +182,30 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildSortDropdownButton() {
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: DropdownButton<String>(
-        icon: const Icon(Icons.filter_alt_sharp),
-        value: dropdownValue,
-        items: sortList.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        onChanged: (String? value) {
-          setState(() {
-            dropdownValue = value!;
-            _sort(searchedBooks, value);
-          });
-        },
+    return DropdownButton<String>(
+      padding: const EdgeInsets.all(12),
+      icon: const Icon(Icons.sort),
+      value: dropdownValue,
+      style: const TextStyle(
+        fontSize: 12,
       ),
+      items: sortList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 10,
+              ),
+          ),
+        );
+      }).toList(),
+      onChanged: (String? value) {
+        setState(() {
+          dropdownValue = value!;
+          _sort(searchedBooks, value);
+        });
+      },
     );
   }
 
