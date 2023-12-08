@@ -6,7 +6,6 @@ class ShoppingPage extends StatefulWidget {
   @override
   State<ShoppingPage> createState() => _ShoppingPageState();
 }
-
 class _ShoppingPageState extends State<ShoppingPage> {
   @override
   void initState() {
