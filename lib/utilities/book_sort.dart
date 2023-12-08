@@ -39,8 +39,7 @@ class BookSort {
             i++;
             _swap(list, i, j);
           }
-          else if (list[j].price!.toLowerCase().compareTo(
-              pivot.price!.toLowerCase()) == -1) {
+          else if (list[j].price!.toLowerCase() < pivot.price!) {
             i++;
             _swap(list, i, j);
           }
@@ -57,8 +56,7 @@ class BookSort {
             i++;
             _swap(list, i, j);
           }
-          else if (list[j].rating!.toLowerCase().compareTo(
-              pivot.rating!.toLowerCase()) == -1) {
+          else if (list[j].rating! < pivot.rating!) {
             i++;
             _swap(list, i, j);
           }
@@ -75,8 +73,7 @@ class BookSort {
             i++;
             _swap(list, i, j);
           }
-          else if (list[j].reviewCount!.toLowerCase().compareTo(
-              pivot.reviewCount!.toLowerCase()) == -1) {
+          else if (list[j].reviewCount! > pivot.reviewCount!) {
             i++;
             _swap(list, i, j);
           }
