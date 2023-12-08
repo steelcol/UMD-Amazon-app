@@ -1,9 +1,7 @@
-import 'package:beta_books/pages/shopping_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
 import 'package:beta_books/routing/routes.dart';
-import 'package:beta_books/controllers/csv_controller.dart';
 import 'package:beta_books/inherited/books_inherited.dart';
 
 class HomePage extends StatefulWidget {
