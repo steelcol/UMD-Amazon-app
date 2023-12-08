@@ -14,16 +14,62 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  List<Book> books = [];
+  List<Book> searchedBooks = [];
+  final TextEditingController SearchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    SearchController.addListener(_onSearchFieldChange);
+
+    // This is required for searching, otherwise app will brick because inherited widget
+    // is being called before init.state() completes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        searchedBooks = BooksData.of(context).books;
+      });
+    });
   }
- 
+
+  void _onSearchFieldChange()
+  {
+    filterBooks(SearchController.text);
+  }
+
+  void filterBooks(String search) {
+    List<Book> books = BooksData.of(context).books;
+    if (search.isNotEmpty) {
+      setState(() {
+        searchedBooks = books.where((book) {
+          // Have to check if each searchable book data member is null
+          // This sucks, but NULL is best way to describe missing data w/ books
+          // and all future features will have to account for it
+          var title = book.title?.toLowerCase() ?? '';
+          var author = book.author?.toLowerCase() ?? '';
+          var isbn13 = book.isbn13 ?? '';
+
+          // TODO: Handle duplicate books (exist in dataset!!)
+          return title.contains(search.toLowerCase()) ||
+              author.contains(search.toLowerCase()) ||
+              isbn13.contains(search.toLowerCase());}).toList();});
+    } else {
+      setState(() {
+        searchedBooks = books;
+      });
+    }
+    // print("Filtered books: ${searchedBooks.map((book) => book.title).toList()}");
+  }
+
+  @override
+  void dispose() {
+    SearchController.removeListener(_onSearchFieldChange);
+    SearchController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    books = BooksData.of(context).books;
     return Scaffold(
       appBar: AppBar(
         title: const Text("BetaBooks"),
@@ -84,26 +130,50 @@ class _HomePageState extends State<HomePage> {
             ]
           ),
         ),
-      body: Center(
-        child: ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),  
-          itemCount: books.length,
-          itemBuilder: (context, index) => _buildBookCard(index),
-        )
-      ),  
+      body: Column(
+        children: [
+          _buildSearchBar(),
+          Expanded(
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: searchedBooks.length,
+              itemBuilder: (context, index) => _buildBookCard(index),),
+          ),
+        ],
+      ),
     );
   }
 
+<<<<<<< HEAD
   Widget _buildBookCard(int index) {  
+=======
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(9),
+      child: TextField(
+        controller: SearchController,
+        decoration: InputDecoration(
+          hintText: 'Enter title, author, or ISBN',
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookCard(int index) {
+
+    Book book = searchedBooks[index];
+>>>>>>> 28efd664c049723a6b71321e72753538f87949a3
 
     return SizedBox(
-      height: books[index].title != null && books[index].title!.length > 50
+      height: book.title != null && book.title!.length > 50
       ? MediaQuery.of(context).size.height/6
       : MediaQuery.of(context).size.height/8,
       child: InkWell(
         onTap: () => Navigator.of(context).pushNamed(
           details,
-          arguments: BookArgs(book: books[index])
+          arguments: BookArgs(book: book)
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
@@ -114,7 +184,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
-                  books[index].title ?? 'Not provided',
+                  book.title ?? 'Not provided',
                   style: const TextStyle(
                     fontSize: 13
                   ),
@@ -123,7 +193,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
-                  books[index].author ?? 'Not provided',
+                  book.author ?? 'Not provided',
                   style: const TextStyle(
                     fontSize: 10.0,
                     fontWeight: FontWeight.w300,
@@ -133,9 +203,13 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
+<<<<<<< HEAD
                   books[index].price != null
                   ? '\$${books[index].price}'
                   : 'Not provided',
+=======
+                  book.price ?? 'Not provided',
+>>>>>>> 28efd664c049723a6b71321e72753538f87949a3
                   style: const TextStyle(
                     fontSize: 10.0,
                     fontWeight: FontWeight.w300,
