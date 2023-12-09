@@ -120,10 +120,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     ListTile(
-                      title: const Text('Account'),
-                      onTap: () => Navigator.of(context).pushNamed(profile),
-                    ),
-                    ListTile(
                       title: const Text('Calendar'),
                       onTap: () => Navigator.of(context).pushNamed(calendar),
                     ),
