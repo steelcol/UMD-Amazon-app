@@ -47,10 +47,6 @@ class _CalendarPageState extends State<CalendarPage> {
                       ],
                     ),
                   ),
-                  ListTile(
-                    title: const Text('Account'),
-                    onTap: () => Navigator.of(context).pushReplacementNamed(profile),
-                  ),
                   const ListTile(
                     title: Text('Calendar'),
                   ),

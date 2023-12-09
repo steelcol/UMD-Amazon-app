@@ -43,6 +43,7 @@ dependencies:
   google_sign_in: ^6.1.6
   firebase_ui_oauth_google: ^1.2.15
   csv: ^5.1.1
+  provider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

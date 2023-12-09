@@ -45,10 +45,6 @@ class _VideosPageState extends State<VideosPage> {
                     ),
                   ),
                   ListTile(
-                    title: const Text('Account'),
-                    onTap: () => Navigator.of(context).pushReplacementNamed(profile),
-                  ),
-                  ListTile(
                     title: const Text('Calendar'),
                     onTap: () => Navigator.of(context).pushReplacementNamed(calendar),
                   ),
