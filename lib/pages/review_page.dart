@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../models/book_model.dart';
+
 class ReviewsPage extends StatefulWidget {
   const ReviewsPage({Key? key}) : super(key: key);
 
@@ -15,7 +17,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
     super.initState();
   }
 
-  final databaseReference = FirebaseFirestore.instance.collection('Events');
+  final databaseReference = FirebaseFirestore.instance.collection('Reviews');
   final String createText = "Enter";
   final String showText = "Review";
   final myController = TextEditingController();
@@ -26,8 +28,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
     super.dispose();
   }
 
-  void createEvent(){
-    databaseReference.doc('ik6WOyW2vjga9AsfyGUc9D4jm5u2').update({"Events_Array": FieldValue.arrayUnion([myController.text])});
+  void createReview(){
+    databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').update({"Title": FieldValue.arrayUnion([myController.text])});
+    databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').update({"Review": FieldValue.arrayUnion([myController.text])});
   }
 
   @override
@@ -47,7 +50,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   hintText: 'Enter Review',
                 ),
               ),
-              TextButton(onPressed: createEvent, child: Text(createText)),
+              TextButton(onPressed: createReview, child: Text(createText)),
               TextButton(
                   onPressed: () {
                     showDialog(
