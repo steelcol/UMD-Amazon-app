@@ -10,6 +10,9 @@ import 'package:beta_books/pages/videos_page.dart';
 import 'package:beta_books/pages/calendar_page.dart';
 import 'package:beta_books/pages/settings_page.dart';
 import 'package:beta_books/pages/shopping_page.dart';
+import 'package:beta_books/pages/details_page.dart';
+import 'package:beta_books/pages/compare_page.dart';
+import 'package:beta_books/args/book_args.dart';
 
 class RouteNavigator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -34,11 +37,26 @@ class RouteNavigator {
           builder: (context) =>
             const SettingsPage()
         ); 
-      case shopping: 
-        return MaterialPageRoute<ShoppingPage>(
+      case shopping: return MaterialPageRoute<ShoppingPage>(
           builder: (context) =>
             const ShoppingPage()
         ); 
+      case details:
+        BookArgs args = settings.arguments as BookArgs;
+        return MaterialPageRoute<DetailsPage>(
+          builder: (context) =>
+            DetailsPage(
+              book: args.book
+            )
+          );
+      case compare:
+        BookArgs args = settings.arguments as BookArgs;
+        return MaterialPageRoute<ComparePage>(
+          builder: (context) =>
+            ComparePage(
+              book: args.book
+            )
+          );
 
       case signin:
         return MaterialPageRoute<SignInScreen>(

@@ -1,12 +1,16 @@
+import 'package:beta_books/models/book_model.dart';
 import 'package:flutter/material.dart';
 
-class ShoppingPage extends StatefulWidget {
-  const ShoppingPage({Key? key}) : super(key: key);
+class ComparePage extends StatefulWidget {
+  const ComparePage({Key? key, required this.book}) : super(key: key);
+
+  final Book book;
 
   @override
-  State<ShoppingPage> createState() => _ShoppingPageState();
+  State<ComparePage> createState() => _ComparePageState();
 }
-class _ShoppingPageState extends State<ShoppingPage> {
+
+class _ComparePageState extends State<ComparePage> {
   @override
   void initState() {
       // TODO: implement initState
