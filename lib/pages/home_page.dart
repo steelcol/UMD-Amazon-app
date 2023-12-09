@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
-import 'package:beta_books/routing/routes.dart'; import 'package:beta_books/inherited/books_inherited.dart';
+import 'package:beta_books/routing/routes.dart';
+import 'package:beta_books/inherited/books_inherited.dart';
 import 'package:beta_books/args/book_args.dart';
+import 'package:beta_books/utilities/book_sort.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,10 +14,15 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+const List<String> sortList = <String>[
+  '', 'Alphabetical', 'Price', 'Rating', 'Review Count'
+];
+
 class _HomePageState extends State<HomePage> {
 
   List<Book> searchedBooks = [];
   final TextEditingController SearchController = TextEditingController();
+  String dropdownValue = sortList.first;
 
   @override
   void initState() {
@@ -30,9 +38,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _sort(List<Book> bookList, String value) {
+    if (bookList.isNotEmpty) {
+      final sort = BookSort();
+      sort.quickSort(bookList, 0, bookList.length - 1, value);
+      setState(() {});
+    }
+  }
+
   void _onSearchFieldChange()
   {
     filterBooks(SearchController.text);
+    _sort(searchedBooks, dropdownValue);
   }
 
   void filterBooks(String search) {
@@ -50,7 +67,8 @@ class _HomePageState extends State<HomePage> {
           // TODO: Handle duplicate books (exist in dataset!!)
           return title.contains(search.toLowerCase()) ||
               author.contains(search.toLowerCase()) ||
-              isbn13.contains(search.toLowerCase());}).toList();});
+              isbn13.contains(search.toLowerCase());}).toList();
+      });
     } else {
       setState(() {
         searchedBooks = books;
@@ -132,11 +150,32 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           _buildSearchBar(),
-          Expanded(
+          if (searchedBooks.isEmpty) ... [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              child: Text(
+                'No results found',
+                style: TextStyle(fontSize: 12, color: Theme.of(context).primaryColorLight),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: _buildDataSetAuthorCard(),
+            ),
+          ] else Expanded(
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: searchedBooks.length,
-              itemBuilder: (context, index) => _buildBookCard(index),),
+              itemCount: searchedBooks.length + 1,
+              itemBuilder: (context, index) {
+                // If not last item continue to build book cards
+                if (index < searchedBooks.length) {
+                  return _buildBookCard(index);
+                } else {
+                  // Build the author footnote if it's the last card
+                  return _buildDataSetAuthorCard();
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -146,13 +185,62 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.all(9),
-      child: TextField(
-        controller: SearchController,
-        decoration: const InputDecoration(
-          hintText: 'Enter title, author, or ISBN',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
-        ),
+      child: Stack(
+        alignment: Alignment.centerRight,
+        children: [
+          /// TEXT FIELD
+          TextField(
+            controller: SearchController,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+            decoration: const InputDecoration(
+              hintText: 'Enter title, author, or ISBN',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
+            ),
+          ),
+          Positioned(
+            right: 6,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                /// VERTICAL LINE
+                border: Border(
+                  left: BorderSide(
+                    color: Theme.of(context).primaryColorLight,
+                    width: .75,
+                  ),
+                ),
+              ),
+
+              /// DROP DOWN MENU
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: dropdownValue,
+                  style: TextStyle(fontSize: 13, color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w300),
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue = value!;
+                      _sort(searchedBooks, value);
+                    });
+                  },
+
+                  /// INTERNAL MENU
+                  items: sortList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(fontSize: 13, color: Theme.of(context).primaryColorLight),
+                      ),
+                    );
+                  }).toList(),
+
+                ),
+              ),
+
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -198,7 +286,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                 child: Text(
-                  book.price != null 
+                  book.price != null
                   ? '\$${book.price}'
                   : 'Not provided',
                   style: const TextStyle(
@@ -213,4 +301,38 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Future<void> openURL() async {
+    const url = 'https://www.kaggle.com/uzair01';
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not open $uri';
+    }
+  }
+
+  Widget _buildDataSetAuthorCard() {
+    return InkWell(
+      onTap: openURL,
+      child: Card(
+        color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Dataset created by Muhammad Uzair Khan',
+                style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColorLight.withOpacity(0.25)),
+              ),
+              Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColorLight.withOpacity(0.25),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }
