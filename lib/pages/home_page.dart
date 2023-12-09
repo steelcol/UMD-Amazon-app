@@ -150,12 +150,6 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           _buildSearchBar(),
-          Row(
-            children: [
-              _buildSortDropdownButton(),
-              const Spacer(),
-            ]
-          ),
           if (searchedBooks.isEmpty) ... [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 18),
@@ -191,42 +185,63 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.all(9),
-      child: TextField(
-        controller: SearchController,
-        decoration: const InputDecoration(
-          hintText: 'Enter title, author, or ISBN',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSortDropdownButton() {
-    return DropdownButton<String>(
-      padding: const EdgeInsets.all(12),
-      icon: const Icon(Icons.sort),
-      value: dropdownValue,
-      style: const TextStyle(
-        fontSize: 12,
-      ),
-      items: sortList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 10,
-              ),
+      child: Stack(
+        alignment: Alignment.centerRight,
+        children: [
+          /// TEXT FIELD
+          TextField(
+            controller: SearchController,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+            decoration: const InputDecoration(
+              hintText: 'Enter title, author, or ISBN',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(borderRadius: BorderRadius.zero,),
+            ),
           ),
-        );
-      }).toList(),
-      onChanged: (String? value) {
-        setState(() {
-          dropdownValue = value!;
-          _sort(searchedBooks, value);
-        });
-      },
+          Positioned(
+            right: 6,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                /// VERTICAL LINE
+                border: Border(
+                  left: BorderSide(
+                    color: Theme.of(context).primaryColorLight,
+                    width: .75,
+                  ),
+                ),
+              ),
+
+              /// DROP DOWN MENU
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: dropdownValue,
+                  style: TextStyle(fontSize: 13, color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.w300),
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue = value!;
+                      _sort(searchedBooks, value);
+                    });
+                  },
+
+                  /// INTERNAL MENU
+                  items: sortList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(fontSize: 13, color: Theme.of(context).primaryColorLight),
+                      ),
+                    );
+                  }).toList(),
+
+                ),
+              ),
+
+            ),
+          ),
+        ],
+      ),
     );
   }
 
