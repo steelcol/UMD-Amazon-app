@@ -322,8 +322,10 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Dataset created by Muhammad Uzair Khan',
-                style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColorLight.withOpacity(0.25)),
+              Expanded(
+                child: Text('Dataset created by Muhammad Uzair Khan',
+                  style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColorLight.withOpacity(0.25)),
+                ),
               ),
               Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColorLight.withOpacity(0.25),
               )
