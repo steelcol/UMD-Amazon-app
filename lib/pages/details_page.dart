@@ -26,29 +26,29 @@ class _DetailsPageState extends State<DetailsPage> {
           children: [
             Text(
               widget.book.title ?? 'N/A',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Price: \$${widget.book.price ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               'Rating: ${widget.book.rating ?? 'N/A'}/5',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Edition: ${widget.book.edition ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Publication Date: ${widget.book.publishDate != null ? _formatDate(widget.book.publishDate!) : 'N/A'}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            Spacer(), // Added Spacer to push button to the bottom
+            const Spacer(), // Added Spacer to push button to the bottom
             Center(
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pushNamed(
@@ -58,7 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 child: const Text('Compare Editions'),
               ),
             ),
-            Spacer(), // Added Spacer to push button to the top
+            const Spacer(), // Added Spacer to push button to the top
           ],
         ),
       ),

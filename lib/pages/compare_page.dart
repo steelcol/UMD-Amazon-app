@@ -16,6 +16,7 @@ class _ComparePageState extends State<ComparePage> {
       // TODO: implement initState
       super.initState();
   }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

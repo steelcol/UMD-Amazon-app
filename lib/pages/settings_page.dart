@@ -28,7 +28,7 @@ class SettingsPage extends StatelessWidget {
               const SizedBox(height: 16.0),
               Text(
                 FirebaseAuth.instance.currentUser?.displayName ?? 'User',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const Divider(height: 24.0, thickness: 2.0),
               ListTile(

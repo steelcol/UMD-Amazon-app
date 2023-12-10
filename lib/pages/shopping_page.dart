@@ -12,6 +12,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       // TODO: implement initState
       super.initState();
   }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
