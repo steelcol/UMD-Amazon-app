@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; import 'package:beta_books/routing/routes.dart'; import 'package:provider/provider.dart'; import 'package:beta_books/providers/theme_provider.dart'; // Add this line
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:beta_books/routing/routes.dart';
+import 'package:provider/provider.dart';
+import 'package:beta_books/providers/theme_provider.dart';
+
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
 

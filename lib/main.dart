@@ -11,7 +11,8 @@ import 'package:beta_books/routing/routes.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:beta_books/inherited/books_inherited.dart';
 import 'package:provider/provider.dart';
-import 'package:beta_books/providers/theme_provider.dart'; // Add this line
+import 'package:beta_books/providers/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,17 +34,39 @@ void main() async {
   ]);
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => AppThemeProvider()), // Updated this line
-      ],
-      child: const BetaBooks(),
+    FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          print('Error: ${snapshot.error}');
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Text(
+                  'Error occurred: ${snapshot.error}',
+                ),
+              ),
+            ),
+          );
+        }
+        final prefs = snapshot.data!;
+        return ChangeNotifierProvider(
+          create: (context) => AppThemeProvider(),
+          lazy: false,
+          builder: (context, _) => BetaBooks(prefs: prefs),
+        );
+      },
     ),
   );
 }
 
 class BetaBooks extends StatefulWidget {
-  const BetaBooks({Key? key}) : super(key: key);
+  final SharedPreferences prefs;
+
+  const BetaBooks({Key? key, required this.prefs}) : super(key: key);
 
   @override
   State<BetaBooks> createState() => _BetaBooksState();
@@ -56,6 +79,7 @@ class _BetaBooksState extends State<BetaBooks> {
   @override
   void initState() {
     super.initState();
+    initThemeProvider(context, widget.prefs);
   }
 
   @override
@@ -106,5 +130,9 @@ class _BetaBooksState extends State<BetaBooks> {
       },
       future: controller.loadCSV(),
     );
+  }
+
+  Future<void> initThemeProvider(BuildContext context, SharedPreferences prefs) async {
+    await Provider.of<AppThemeProvider>(context, listen: false).init(prefs);
   }
 }
