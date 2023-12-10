@@ -26,7 +26,8 @@ class _ComparePageState extends State<ComparePage> {
   Widget build(BuildContext context) {
     // No reason to check edition because they are all the same
     relatedBooks = BooksData.of(context).books.where((book) 
-      => book.title == widget.book.title).toList();
+      => book.title == widget.book.title
+      && book != widget.book).toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text("BetaBooks"),
@@ -44,7 +45,9 @@ class _ComparePageState extends State<ComparePage> {
                     vertical: 20
                   ),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 10,
+                    height: widget.book.title != null && widget.book.title!.length > 50
+                    ? MediaQuery.of(context).size.height / 6
+                    : MediaQuery.of(context).size.height / 10,
                     width: MediaQuery.of(context).size.width / 3,
                     child: Text(
                       widget.book.title ?? 'Not provided',
@@ -193,7 +196,7 @@ class _ComparePageState extends State<ComparePage> {
               ],
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
+              height: MediaQuery.of(context).size.height / 6,
               child: ListView.builder(
                 itemCount: relatedBooks.length,
                 itemBuilder: (context, index) {
