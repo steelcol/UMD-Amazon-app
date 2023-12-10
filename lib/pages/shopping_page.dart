@@ -35,10 +35,27 @@ class _ShoppingPageState extends State<ShoppingPage> {
             }
             else if (snapshot.hasData) {
               _controller.shoppingList = snapshot.data as List<ShoppingBook>;
-              return Center(
-                child: ListView.builder(
-                  itemCount: _controller.shoppingList.length,
-                  itemBuilder: (context, index) => _buildBookCard(index),
+              return SingleChildScrollView(
+                physics: const ScrollPhysics(),
+                child: Center(
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _controller.shoppingList.length,
+                        itemBuilder: (context, index) => _buildBookCard(index),
+                      ),
+                      ElevatedButton(
+                        onPressed: _controller.shoppingList.isNotEmpty
+                        ?  () async {
+                          await _controller.buyBooks();
+                          setState(() {});
+                        }
+                        :  null,
+                        child: const Text('Buy Books'),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }
@@ -64,42 +81,45 @@ class _ShoppingPageState extends State<ShoppingPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-                  child: Text(
-                    book.title ?? 'Not provided',
-                    style: const TextStyle(
-                      fontSize: 13
+            SizedBox(
+              width: MediaQuery.of(context).size.width/1.4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+                    child: Text(
+                      book.title ?? 'Not provided',
+                      style: const TextStyle(
+                        fontSize: 13
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-                  child: Text(
-                    book.isbn13 ?? 'Not provided',
-                    style: const TextStyle(
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w300,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+                    child: Text(
+                      book.isbn13 ?? 'Not provided',
+                      style: const TextStyle(
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-                  child: Text(
-                    book.price != null
-                    ? '\$${book.price}'
-                    : 'Not provided',
-                    style: const TextStyle(
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w300,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+                    child: Text(
+                      book.price != null
+                      ? '\$${book.price}'
+                      : 'Not provided',
+                      style: const TextStyle(
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             IconButton(
               onPressed: () {

@@ -45,7 +45,7 @@ class ShoppingController {
             'isbn13': book.isbn13,
             'price': book.price,
             'title': book.title
-          }])}); 
+          }])},SetOptions(merge: true)); 
       }
     }
     catch (error) {
@@ -67,5 +67,37 @@ class ShoppingController {
     catch (error) {
       throw Error();
     }
+  }
+
+  Future<void> buyBooks() async {
+    var document = await dbRef.doc(user!.uid).get();
+    try {
+      if (document.data()!.containsKey('BooksBeingShipped')) {
+        shoppingList.forEach((book) async { 
+          await dbRef.doc(user!.uid)
+            .update({'BooksBeingShipped': FieldValue.arrayUnion([{
+              'ArrivalDate': DateTime.now().millisecondsSinceEpoch,
+              'Title': book.title
+            }])});
+        });
+      }
+      else {
+        shoppingList.forEach((book) async { 
+          await dbRef.doc(user!.uid)
+            .set({'BooksBeingShipped': FieldValue.arrayUnion([{
+              'ArrivalDate': DateTime.now().millisecondsSinceEpoch,
+              'Title': book.title
+            }])},SetOptions(merge: true));
+        });
+      }
+    }
+    catch (error) {
+     print(error);
+    }
+    int length = shoppingList.length;
+    for (int i = 0; i < length; i++) {
+      removeBookFromShoppingCart(i);
+    }
+    shoppingList = [];
   }
 }
