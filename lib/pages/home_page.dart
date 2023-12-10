@@ -1,3 +1,4 @@
+import 'package:beta_books/controllers/shopping_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/models/book_model.dart';
@@ -19,7 +20,7 @@ const List<String> sortList = <String>[
 ];
 
 class _HomePageState extends State<HomePage> {
-
+  List<Book> shoppingList = [];
   List<Book> searchedBooks = [];
   final TextEditingController SearchController = TextEditingController();
   String dropdownValue = sortList.first;
@@ -334,5 +335,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }

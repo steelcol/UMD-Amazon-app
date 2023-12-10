@@ -1,11 +1,15 @@
 import 'package:beta_books/args/book_args.dart';
+import 'package:beta_books/controllers/shopping_controller.dart';
 import 'package:beta_books/models/book_model.dart';
+import 'package:beta_books/models/shopping_book_model.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class DetailsPage extends StatefulWidget {
-  const DetailsPage({Key? key, required this.book}) : super(key: key);
+  const DetailsPage({Key? key, 
+    required this.book
+  }) : super(key: key);
 
   final Book book;
 
@@ -86,6 +90,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     setState(() {});
   }
+  ShoppingController _controller = ShoppingController();
 
   @override
   Widget build(BuildContext context) {
@@ -98,31 +103,65 @@ class _DetailsPageState extends State<DetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.book.title ?? 'N/A',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                widget.book.title ?? 'N/A',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Price: \$${widget.book.price ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                'Price: \$${widget.book.price ?? 'N/A'}',
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            SizedBox(height: 12),
-            Text(
-              'Rating: ${widget.book.rating ?? 'N/A'}/5',
-              style: TextStyle(fontSize: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                'Rating: ${widget.book.rating ?? 'N/A'}/5',
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Edition: ${widget.book.edition ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                'Edition: ${widget.book.edition ?? 'N/A'}',
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Publication Date: ${widget.book.publishDate != null ? _formatDate(widget.book.publishDate!) : 'N/A'}',
-              style: TextStyle(fontSize: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text(
+                'Publication Date: ${widget.book.publishDate != null ? _formatDate(widget.book.publishDate!) : 'N/A'}',
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            Spacer(), // Added Spacer to push button to the bottom
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      const snackBar = SnackBar(
+                        content: Text('Added to shopping cart'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      _controller.addBookToShoppingCart(
+                        ShoppingBook(
+                          isbn13: widget.book.isbn13,
+                          price: widget.book.price, 
+                          title: widget.book.title
+                        )
+                      );
+                    }, 
+                    child: const Text('Add to cart'),
+                  ),
+                ),
+              ],
+            ),
             Center(
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pushNamed(
@@ -132,7 +171,6 @@ class _DetailsPageState extends State<DetailsPage> {
                 child: const Text('Compare Editions'),
               ),
             ),
-            Spacer(), // Added Spacer to push button to the top
             TextField(
               controller: myController,
               decoration: const InputDecoration(
