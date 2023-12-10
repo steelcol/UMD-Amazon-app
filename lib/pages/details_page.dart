@@ -3,6 +3,7 @@ import 'package:beta_books/models/book_model.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:beta_books/models/review_model.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, required this.book}) : super(key: key);
@@ -19,52 +20,51 @@ class _DetailsPageState extends State<DetailsPage> {
   final String showText = "Review";
   final myController = TextEditingController();
   final myController2 = TextEditingController();
-  static const List<String> list = <String>['1', '2', '3', '4'];
+  static const List<String> list = <String>['1', '2', '3', '4', '5'];
   String dropdownValue = list.first;
 
-  late List<String> rev;
-  late int len;
-  late final DocumentSnapshot doc;
+  late List<Review> reviews = [];
 
-  /*void getLen() async {
-    await databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').get().then((value) {
+  Future<void> getReview() async {
+    bool bookExists = await _checkExist('${widget.book.title}');
+    if (bookExists) {
       try {
-        final val = value.data();
-        if(value.data() != null) {
-          debugPrint('$len');
-          len = int.parse(val!['${widget.book.title}'].length.toString());
-          debugPrint('$len');
-        } else {
-          len = 0;
-        }
+        reviews = [];
+        debugPrint('reviews emptied');
+
+        await databaseReference
+            .doc('q2D7TPbPNtUZ3GU0gj2M')
+            .get()
+            .then((value) {
+          List.from(value.data()!['${widget.book.title}']).forEach((element) {
+            debugPrint('making review');
+            Review review = Review(
+                review: element['review'],
+                score: element['score']
+            );
+            debugPrint('review made: ${review.review}, ${review.score}');
+            reviews.add(review);
+          });
+        });
       } catch (e) {
         throw Future.error('ERROR: $e');
       }
-    });
-  }*/
-
-  void getReview() async {
-    debugPrint('function called');
-    try {
-      rev = [];
-      await databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').get().then((value) {
-        for (var element in List.from(value.data()!['${widget.book.title}'])) {
-          rev.add(element.toString());
-        }
-      });
-    } catch (e) {
-      throw Future.error('ERROR: $e');
+    } else {
+      debugPrint('WARNING: Book does not exist in database');
+      reviews = [];
     }
+  }
+
+  Future<bool> _checkExist(String book) async {
+    DocumentSnapshot<Map<String, dynamic>> document = await databaseReference
+        .doc('q2D7TPbPNtUZ3GU0gj2M')
+        .get();
+    return document.exists ? true : false;
   }
 
   @override
   void initState() {
     super.initState();
-
-    getReview();
-
-    len = rev.length;
-
     setState(() {});
   }
 
@@ -93,105 +93,140 @@ class _DetailsPageState extends State<DetailsPage> {
       appBar: AppBar(
         title: const Text("BetaBooks"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.book.title ?? 'N/A',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Price: \$${widget.book.price ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 12),
-            Text(
-              'Rating: ${widget.book.rating ?? 'N/A'}/5',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Edition: ${widget.book.edition ?? 'N/A'}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Publication Date: ${widget.book.publishDate != null ? _formatDate(widget.book.publishDate!) : 'N/A'}',
-              style: TextStyle(fontSize: 18),
-            ),
-            Spacer(), // Added Spacer to push button to the bottom
-            Center(
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  compare,
-                  arguments: BookArgs(book: widget.book),
+      body: FutureBuilder<void>(
+        future: getReview(),
+        builder: (context, snapshot) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.book.title ?? 'N/A',
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                child: const Text('Compare Editions'),
-              ),
+                const SizedBox(height: 8),
+                Text(
+                  'Price: \$${widget.book.price ?? 'N/A'}',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Rating: ${widget.book.rating ?? 'N/A'}/5',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Edition: ${widget.book.edition ?? 'N/A'}',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Publication Date: ${widget.book.publishDate != null
+                      ? _formatDate(widget.book.publishDate!)
+                      : 'N/A'}',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const Spacer(), // Added Spacer to push button to the bottom
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed(
+                          compare,
+                          arguments: BookArgs(book: widget.book),
+                        ),
+                    child: const Text('Compare Editions'),
+                  ),
+                ),
+                const Spacer(), // Added Spacer to push button to the top
+                TextField(
+                  controller: myController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter Review',
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: dropdownValue,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      dropdownValue = value!;
+                    });
+                  },
+                  items: list.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                TextButton(onPressed: createReview, child: Text(createText)),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: reviews.length,
+                    itemBuilder: (context, index) {
+                      debugPrint('reviews.length: ${reviews.length}');
+                      return _buildEventCard(index);
+                    },
+                  ),
+                ),
+              ],
             ),
-            Spacer(), // Added Spacer to push button to the top
-            TextField(
-              controller: myController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter Review',
-              ),
-            ),
-            DropdownButton<String>(
-              value: dropdownValue,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
-              ),
-              onChanged: (String? value) {
-                // This is called when the user selects an item.
-                setState(() {
-                  dropdownValue = value!;
-                });
-              },
-              items: list.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            TextButton(onPressed: createReview, child: Text(createText)),
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: len,
-                itemBuilder: (context, index) {
-                  print(len);
-                  return _buildEventCard(index);
-                },
-              ),
-            ),
-          ],
-        ),
+          );
+        }
       ),
     );
   }
 
   Widget _buildEventCard(int index) {
-    return InkWell(
-      child: Text(
-        "Review: ${rev[index]}",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+    return Card(
+      child: InkWell(
+        child: Padding(
+          padding: const EdgeInsets.all(9),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text("Review: ",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text('${reviews[index].score} / 5',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ]
+              ),
+              Text('${reviews[index].review}',
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
