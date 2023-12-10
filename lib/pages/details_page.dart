@@ -5,6 +5,7 @@ import 'package:beta_books/models/shopping_book_model.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:beta_books/models/review_model.dart';
 
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key, 
@@ -23,52 +24,47 @@ class _DetailsPageState extends State<DetailsPage> {
   final String showText = "Review";
   final myController = TextEditingController();
   final myController2 = TextEditingController();
-  static const List<String> list = <String>['1', '2', '3', '4'];
+  static const List<String> list = <String>['1', '2', '3', '4', '5'];
   String dropdownValue = list.first;
 
-  late List<String> rev;
-  late int len;
-  late final DocumentSnapshot doc;
+  late List<Review> reviews = [];
 
-  /*void getLen() async {
-    await databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').get().then((value) {
+  Future<void> getReview() async {
+    bool bookExists = await _checkExist('${widget.book.title}');
+    if (bookExists) {
       try {
-        final val = value.data();
-        if(value.data() != null) {
-          debugPrint('$len');
-          len = int.parse(val!['${widget.book.title}'].length.toString());
-          debugPrint('$len');
-        } else {
-          len = 0;
-        }
+        reviews = [];
+
+        await databaseReference
+            .doc('q2D7TPbPNtUZ3GU0gj2M')
+            .get()
+            .then((value) {
+          List.from(value.data()!['${widget.book.title}']).forEach((element) {
+            Review review = Review(
+                review: element['review'],
+                score: element['score']
+            );
+            reviews.add(review);
+          });
+        });
       } catch (e) {
         throw Future.error('ERROR: $e');
       }
-    });
-  }*/
-
-  void getReview() async {
-    debugPrint('function called');
-    try {
-      rev = [];
-      await databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').get().then((value) {
-        for (var element in List.from(value.data()!['${widget.book.title}'])) {
-          rev.add(element.toString());
-        }
-      });
-    } catch (e) {
-      throw Future.error('ERROR: $e');
+    } else {
+      reviews = [];
     }
+  }
+
+  Future<bool> _checkExist(String book) async {
+    DocumentSnapshot<Map<String, dynamic>> document = await databaseReference
+        .doc('q2D7TPbPNtUZ3GU0gj2M')
+        .get();
+    return document.exists ? true : false;
   }
 
   @override
   void initState() {
     super.initState();
-
-    getReview();
-
-    len = rev.length;
-
     setState(() {});
   }
 
@@ -98,7 +94,10 @@ class _DetailsPageState extends State<DetailsPage> {
       appBar: AppBar(
         title: const Text("BetaBooks"),
       ),
-      body: Padding(
+      body: FutureBuilder<void>(
+          future: getReview(),
+          builder: (context, snapshot) {
+            return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,11 +151,11 @@ class _DetailsPageState extends State<DetailsPage> {
                       _controller.addBookToShoppingCart(
                         ShoppingBook(
                           isbn13: widget.book.isbn13,
-                          price: widget.book.price, 
+                          price: widget.book.price,
                           title: widget.book.title
                         )
                       );
-                    }, 
+                    },
                     child: const Text('Add to cart'),
                   ),
                 ),
@@ -202,34 +201,61 @@ class _DetailsPageState extends State<DetailsPage> {
             ),
             TextButton(onPressed: createReview, child: Text(createText)),
             Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 vertical: 10,
                 horizontal: 10,
               ),
               child: ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: len,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: reviews.length,
                 itemBuilder: (context, index) {
-                  print(len);
                   return _buildEventCard(index);
                 },
               ),
             ),
           ],
         ),
+            );
+          }
       ),
     );
   }
 
   Widget _buildEventCard(int index) {
-    return InkWell(
-      child: Text(
-        "Review: ${rev[index]}",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+    return Card(
+      child: InkWell(
+        child: Padding(
+          padding: const EdgeInsets.all(9),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text("Review: ",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text('${reviews[index].score} / 5',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ]
+              ),
+              Text('${reviews[index].review}',
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
