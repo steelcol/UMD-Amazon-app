@@ -9,3 +9,5 @@ const String details = '/details';
 const String compare = '/compare';
 const String login = '/login';
 
+const String reviews = '/reviews';
+

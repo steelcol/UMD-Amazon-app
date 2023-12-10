@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:beta_books/routing/routes.dart';
-import 'package:provider/provider.dart';
-import 'package:beta_books/providers/theme_provider.dart'; // Add this line
-
+import 'package:firebase_auth/firebase_auth.dart'; import 'package:beta_books/routing/routes.dart'; import 'package:provider/provider.dart'; import 'package:beta_books/providers/theme_provider.dart'; // Add this line
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -50,83 +46,6 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.exit_to_app),
-                title: const Text('Logout'),
-                onTap: () async {
-                  bool shouldLogout = await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Confirm Logout'),
-                      content: const Text('Are you sure you want to log out?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text('Logout'),
-                        ),
-                      ],
-                    ),
-                  );
-
-                  if (shouldLogout == true) {
-                    try {
-                      await FirebaseAuth.instance.signOut();
-                      Navigator.of(context).pushReplacementNamed(login);
-                    } catch (error) {
-                      print('Error signing out: $error');
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Error'),
-                          content: const Text('An error occurred while signing out.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.delete),
-                title: const Text('Delete Account'),
-                onTap: () async {
-                  bool shouldDelete = await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Confirm Account Deletion'),
-                      content: const Text('Are you sure you want to delete your account?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    ),
-                  );
-
-                  if (shouldDelete == true) {
-                    try {
-                      await FirebaseAuth.instance.currentUser!.delete();
-                      Navigator.of(context).pushReplacementNamed(login);
-                    } catch (error) {
-                      print('Error deleting account: $error');
-                    }
-                  }
-                },
               ),
             ],
           ),
