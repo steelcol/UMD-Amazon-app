@@ -2,27 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../inherited/books_inherited.dart';
 import '../models/book_model.dart';
 
 class VideosPage extends StatefulWidget {
-  const VideosPage({Key? key}) : super(key: key);
+  const VideosPage({Key? key, required this.videoURL}) : super(key: key);
+
+  final String videoURL;
 
   @override
   State<VideosPage> createState() => _VideosPageState();
 }
 
 class _VideosPageState extends State<VideosPage> {
+  late YoutubePlayerController _controller;
+  //final String videoURL = 'YMx8Bbev6T4&t=25s';
+  /*
   final List<String> videoIds = [
     'YMx8Bbev6T4&t=25s',
     'dSlaBuspxZU',
 
   ];
 
+   */
+
   @override
   void initState() {
+    _controller = YoutubePlayerController(
+      initialVideoId: YoutubePlayer.convertUrlToId(
+        widget.videoURL,
+      )!,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        showLiveFullscreenButton: false,
+      ),
+    );
+    super.initState();
+  }
 
-      super.initState();
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -77,7 +100,57 @@ class _VideosPageState extends State<VideosPage> {
           ]
         ),
       ),
-      body: ListView.builder(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            YoutubePlayer(
+              controller: _controller,
+              showVideoProgressIndicator: true,
+            ),
+            /*SizedBox(height: 16),
+            Text(
+              widget.exerciseName,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              widget.description,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                _addExercisePopup();
+              },
+              icon: Icon(Icons.add),
+              label: Text(
+                'Add Exercise to Workout',
+                style: TextStyle(fontSize: 16),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+
+             */
+          ],
+        ),
+      ),
+     /* body: ListView.builder(
         itemCount: videoIds.length,
         itemBuilder: (context, index) {
           return GestureDetector(
@@ -97,7 +170,7 @@ class _VideosPageState extends State<VideosPage> {
             ),
           );
         },
-      ),
+      ), */
     );
   }
 }

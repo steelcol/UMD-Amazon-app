@@ -1,3 +1,4 @@
+import 'package:beta_books/args/video_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -14,6 +15,8 @@ import 'package:beta_books/pages/details_page.dart';
 import 'package:beta_books/pages/compare_page.dart';
 import 'package:beta_books/args/book_args.dart';
 
+import '../pages/review_page.dart';
+
 class RouteNavigator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -22,12 +25,15 @@ class RouteNavigator {
           builder: (context) =>
             const HomePage()
         ); 
-      case videos: 
+      case videos:
+        VideoArguments args = settings.arguments as VideoArguments;
         return MaterialPageRoute<VideosPage>(
           builder: (context) =>
-            const VideosPage()
+            VideosPage(
+              videoURL: args.videoURL,
+            )
         ); 
-      case calendar: 
+      case calendar:
         return MaterialPageRoute<CalendarPage>(
           builder: (context) =>
             const CalendarPage()
@@ -37,7 +43,8 @@ class RouteNavigator {
           builder: (context) =>
             const SettingsPage()
         ); 
-      case shopping: return MaterialPageRoute<ShoppingPage>(
+      case shopping: 
+        return MaterialPageRoute<ShoppingPage>(
           builder: (context) =>
             const ShoppingPage()
         ); 
@@ -46,7 +53,7 @@ class RouteNavigator {
         return MaterialPageRoute<DetailsPage>(
           builder: (context) =>
             DetailsPage(
-              book: args.book
+              book: args.book,
             )
           );
       case compare:
@@ -57,6 +64,11 @@ class RouteNavigator {
               book: args.book
             )
           );
+      case reviews:
+        return MaterialPageRoute<ReviewsPage>(
+            builder: (context) =>
+            const ReviewsPage()
+        );
 
       case signin:
         return MaterialPageRoute<SignInScreen>(
