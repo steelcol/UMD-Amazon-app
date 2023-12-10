@@ -14,6 +14,8 @@ import 'package:beta_books/pages/details_page.dart';
 import 'package:beta_books/pages/compare_page.dart';
 import 'package:beta_books/args/book_args.dart';
 
+import '../pages/review_page.dart';
+
 class RouteNavigator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -57,6 +59,11 @@ class RouteNavigator {
               book: args.book
             )
           );
+      case reviews:
+        return MaterialPageRoute<ReviewsPage>(
+            builder: (context) =>
+            const ReviewsPage()
+        );
 
       case signin:
         return MaterialPageRoute<SignInScreen>(

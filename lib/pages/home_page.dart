@@ -127,6 +127,10 @@ class _HomePageState extends State<HomePage> {
                       title: const Text('Videos'),
                       onTap: () => Navigator.of(context).pushNamed(videos),
                     ),
+                    ListTile(
+                      title: const Text('reviews'),
+                      onTap: () => Navigator.of(context).pushNamed(reviews),
+                    ),
                   ],
                 ),
               ),
