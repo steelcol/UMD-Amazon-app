@@ -95,129 +95,129 @@ class _DetailsPageState extends State<DetailsPage> {
         title: const Text("BetaBooks"),
       ),
       body: FutureBuilder<void>(
-          future: getReview(),
-          builder: (context, snapshot) {
-            return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                widget.book.title ?? 'N/A',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                'Price: \$${widget.book.price ?? 'N/A'}',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                'Rating: ${widget.book.rating ?? 'N/A'}/5',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                'Edition: ${widget.book.edition ?? 'N/A'}',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                'Publication Date: ${widget.book.publishDate != null ? _formatDate(widget.book.publishDate!) : 'N/A'}',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        future: getReview(),
+        builder: (context, snapshot) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    widget.book.title ?? 'N/A',
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    'Price: \$${widget.book.price ?? 'N/A'}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    'Rating: ${widget.book.rating ?? 'N/A'}/5',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    'Edition: ${widget.book.edition ?? 'N/A'}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    'Publication Date: ${widget.book.publishDate != null ? _formatDate(widget.book.publishDate!) : 'N/A'}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          const snackBar = SnackBar(
+                            content: Text('Added to shopping cart'),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          _controller.addBookToShoppingCart(
+                            ShoppingBook(
+                              isbn13: widget.book.isbn13,
+                              price: widget.book.price,
+                              title: widget.book.title
+                            )
+                          );
+                        },
+                        child: const Text('Add to cart'),
+                      ),
+                    ),
+                  ],
+                ),
+                Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      const snackBar = SnackBar(
-                        content: Text('Added to shopping cart'),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      _controller.addBookToShoppingCart(
-                        ShoppingBook(
-                          isbn13: widget.book.isbn13,
-                          price: widget.book.price,
-                          title: widget.book.title
-                        )
-                      );
+                    onPressed: () => Navigator.of(context).pushNamed(
+                      compare,
+                      arguments: BookArgs(book: widget.book),
+                    ),
+                    child: const Text('Compare Editions'),
+                  ),
+                ),
+                TextField(
+                  controller: myController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter Review',
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: dropdownValue,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      dropdownValue = value!;
+                    });
+                  },
+                  items: list.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                TextButton(onPressed: createReview, child: Text(createText)),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 10,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: reviews.length,
+                    itemBuilder: (context, index) {
+                      return _buildEventCard(index);
                     },
-                    child: const Text('Add to cart'),
                   ),
                 ),
               ],
             ),
-            Center(
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  compare,
-                  arguments: BookArgs(book: widget.book),
-                ),
-                child: const Text('Compare Editions'),
-              ),
-            ),
-            TextField(
-              controller: myController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter Review',
-              ),
-            ),
-            DropdownButton<String>(
-              value: dropdownValue,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
-              ),
-              onChanged: (String? value) {
-                // This is called when the user selects an item.
-                setState(() {
-                  dropdownValue = value!;
-                });
-              },
-              items: list.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            TextButton(onPressed: createReview, child: Text(createText)),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 10,
-              ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: reviews.length,
-                itemBuilder: (context, index) {
-                  return _buildEventCard(index);
-                },
-              ),
-            ),
-          ],
-        ),
-            );
-          }
+          );
+        }
       ),
     );
   }
