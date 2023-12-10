@@ -30,19 +30,16 @@ class _DetailsPageState extends State<DetailsPage> {
     if (bookExists) {
       try {
         reviews = [];
-        debugPrint('reviews emptied');
 
         await databaseReference
             .doc('q2D7TPbPNtUZ3GU0gj2M')
             .get()
             .then((value) {
           List.from(value.data()!['${widget.book.title}']).forEach((element) {
-            debugPrint('making review');
             Review review = Review(
                 review: element['review'],
                 score: element['score']
             );
-            debugPrint('review made: ${review.review}, ${review.score}');
             reviews.add(review);
           });
         });
@@ -50,7 +47,6 @@ class _DetailsPageState extends State<DetailsPage> {
         throw Future.error('ERROR: $e');
       }
     } else {
-      debugPrint('WARNING: Book does not exist in database');
       reviews = [];
     }
   }
@@ -180,7 +176,6 @@ class _DetailsPageState extends State<DetailsPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: reviews.length,
                     itemBuilder: (context, index) {
-                      debugPrint('reviews.length: ${reviews.length}');
                       return _buildEventCard(index);
                     },
                   ),
