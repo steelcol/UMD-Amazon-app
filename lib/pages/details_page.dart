@@ -86,7 +86,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     setState(() {});
   }
-  ShoppingController _controller = ShoppingController();
+  final ShoppingController _controller = ShoppingController();
 
   @override
   Widget build(BuildContext context) {

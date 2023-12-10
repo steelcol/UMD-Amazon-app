@@ -20,13 +20,13 @@ const List<String> sortList = <String>[
 class _HomePageState extends State<HomePage> {
   List<Book> shoppingList = [];
   List<Book> searchedBooks = [];
-  final TextEditingController SearchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
   String dropdownValue = sortList.first;
 
   @override
   void initState() {
     super.initState();
-    SearchController.addListener(_onSearchFieldChange);
+    searchController.addListener(_onSearchFieldChange);
 
     // This is required for searching, otherwise app will brick because inherited widget
     // is being called before init.state() completes
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   void _onSearchFieldChange()
   {
-    filterBooks(SearchController.text);
+    filterBooks(searchController.text);
     _sort(searchedBooks, dropdownValue);
   }
 
@@ -78,8 +78,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    SearchController.removeListener(_onSearchFieldChange);
-    SearchController.dispose();
+    searchController.removeListener(_onSearchFieldChange);
+    searchController.dispose();
 
     super.dispose();
   }
@@ -125,10 +125,6 @@ class _HomePageState extends State<HomePage> {
                     ListTile(
                       title: const Text('Videos'),
                       onTap: () => Navigator.of(context).pushNamed(videos),
-                    ),
-                    ListTile(
-                      title: const Text('reviews'),
-                      onTap: () => Navigator.of(context).pushNamed(reviews),
                     ),
                   ],
                 ),
@@ -189,7 +185,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           /// TEXT FIELD
           TextField(
-            controller: SearchController,
+            controller: searchController,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
             decoration: const InputDecoration(
               hintText: 'Enter title, author, or ISBN',
