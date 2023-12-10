@@ -14,11 +14,13 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-
   final databaseReference = FirebaseFirestore.instance.collection('Reviews');
   final String createText = "Enter";
   final String showText = "Review";
   final myController = TextEditingController();
+  final myController2 = TextEditingController();
+  static const List<String> list = <String>['1', '2', '3', '4'];
+  String dropdownValue = list.first;
 
   late List<String> rev;
   late int len;
@@ -42,18 +44,17 @@ class _DetailsPageState extends State<DetailsPage> {
   }*/
 
   void getReview() async {
-      debugPrint('function called');
-      try {
-        rev = [];
-        await databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').get().then((value) {
+    debugPrint('function called');
+    try {
+      rev = [];
+      await databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').get().then((value) {
         for (var element in List.from(value.data()!['${widget.book.title}'])) {
           rev.add(element.toString());
         }
       });
-      } catch (e) {
-        throw Future.error('ERROR: $e');
-      }
-
+    } catch (e) {
+      throw Future.error('ERROR: $e');
+    }
   }
 
   @override
@@ -64,8 +65,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
     len = rev.length;
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -74,16 +74,21 @@ class _DetailsPageState extends State<DetailsPage> {
     super.dispose();
   }
 
-  void createReview(){
-    databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').update({'${widget.book.title}': FieldValue.arrayUnion([myController.text])});
-    setState(() {
-
+  void createReview() {
+    databaseReference.doc('q2D7TPbPNtUZ3GU0gj2M').update({
+      "${widget.book.title}": FieldValue.arrayUnion([
+        {
+          "review": myController.text,
+          "score": dropdownValue,
+        }
+      ])
     });
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("BetaBooks"),
@@ -130,9 +135,32 @@ class _DetailsPageState extends State<DetailsPage> {
             Spacer(), // Added Spacer to push button to the top
             TextField(
               controller: myController,
-              decoration: const InputDecoration(border: OutlineInputBorder(),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 hintText: 'Enter Review',
               ),
+            ),
+            DropdownButton<String>(
+              value: dropdownValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  dropdownValue = value!;
+                });
+              },
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
             TextButton(onPressed: createReview, child: Text(createText)),
             Container(
@@ -146,9 +174,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 itemCount: len,
                 itemBuilder: (context, index) {
                   print(len);
-                  return _buildEventCard(
-                      index
-                  );
+                  return _buildEventCard(index);
                 },
               ),
             ),
@@ -177,8 +203,18 @@ class _DetailsPageState extends State<DetailsPage> {
 
   String _getMonthName(int month) {
     const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return monthNames[month - 1];
   }
