@@ -37,7 +37,8 @@ class RouteNavigator {
           builder: (context) =>
             const SettingsPage()
         ); 
-      case shopping: return MaterialPageRoute<ShoppingPage>(
+      case shopping: 
+        return MaterialPageRoute<ShoppingPage>(
           builder: (context) =>
             const ShoppingPage()
         ); 
@@ -46,7 +47,7 @@ class RouteNavigator {
         return MaterialPageRoute<DetailsPage>(
           builder: (context) =>
             DetailsPage(
-              book: args.book
+              book: args.book,
             )
           );
       case compare:
