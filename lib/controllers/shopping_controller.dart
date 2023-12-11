@@ -16,7 +16,9 @@ class ShoppingController {
           ShoppingBook book = ShoppingBook(
             isbn13: value['isbn13'],
             price: value['price'],
-            title: value['title']
+            title: value['title'],
+            rating: value['rating'],
+            reviewCount: value['reviewCount']
           );
           shoppingList.add(book); 
         }
@@ -36,7 +38,9 @@ class ShoppingController {
           .update({'ShoppingList': FieldValue.arrayUnion([{
             'isbn13': book.isbn13,
             'price': book.price,
-            'title': book.title
+            'title': book.title,
+            'rating': book.rating,
+            'reviewCount': book.reviewCount
           }])}); 
       }
       else {
@@ -44,7 +48,9 @@ class ShoppingController {
           .set({'ShoppingList': FieldValue.arrayUnion([{
             'isbn13': book.isbn13,
             'price': book.price,
-            'title': book.title
+            'title': book.title,
+            'rating': book.rating,
+            'reviewCount': book.reviewCount
           }])},SetOptions(merge: true)); 
       }
     }
@@ -61,7 +67,9 @@ class ShoppingController {
         .update({'ShoppingList': FieldValue.arrayRemove([{
           'isbn13': book.isbn13,
           'price': book.price,
-          'title': book.title
+          'title': book.title,
+          'rating': book.rating,
+          'reviewCount': book.reviewCount
         }])});
     }
     catch (error) {

@@ -1,70 +1,125 @@
 import 'package:beta_books/controllers/shopping_controller.dart';
 import 'package:beta_books/models/shopping_book_model.dart';
+import 'package:beta_books/utilities/shopping_book_sort.dart';
 import 'package:flutter/material.dart';
 
 class ShoppingPage extends StatefulWidget {
-  const ShoppingPage({Key? key}) : super(key: key);
+  ShoppingPage({Key? key}) : super(key: key);
+
 
   @override
   State<ShoppingPage> createState() => _ShoppingPageState();
 }
+
+  const List<String> sortList = [
+    '',
+    'Alphabetical',
+    'Price',
+    'Rating',
+    'Review Count'
+  ];
+
 class _ShoppingPageState extends State<ShoppingPage> {
   final ShoppingController _controller = ShoppingController();
+  String dropdownValue = sortList.first;
+  bool _loading = true;
 
   @override
   void initState() {
       // TODO: implement initState
       super.initState();
+      getShoppingCart();
   }
+
+  void getShoppingCart() async {
+    _controller.shoppingList = await _controller.getShoppingCart();
+    _loading = false;
+    setState(() {});
+  }
+
+  void _sort(List<ShoppingBook> bookList, String value) {
+    if (bookList.isNotEmpty) {
+      final sort = ShoppingBookSort();
+      sort.quickSort(bookList, 0, bookList.length - 1, value);
+      setState(() {});
+    }
+  }
+
 
   @override Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("BetaBooks"),
       ),
-      body: FutureBuilder(
-        future: _controller.getShoppingCart(), 
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  '${snapshot.error} occurred',
-                ),
-              );
+      body: _loading == true 
+      ? const Center(
+          child: CircularProgressIndicator(),
+        )
+      : Column(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: _buildSortBar(),
+          ),
+          Expanded(
+            child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: _controller.shoppingList.length,
+            itemBuilder: (context, index) => _buildBookCard(index),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: _controller.shoppingList.isNotEmpty
+            ?  () async {
+              await _controller.buyBooks();
+              setState(() {});
             }
-            else if (snapshot.hasData) {
-              _controller.shoppingList = snapshot.data as List<ShoppingBook>;
-              return SingleChildScrollView(
-                physics: const ScrollPhysics(),
-                child: Center(
-                  child: Column(
-                    children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _controller.shoppingList.length,
-                        itemBuilder: (context, index) => _buildBookCard(index),
-                      ),
-                      ElevatedButton(
-                        onPressed: _controller.shoppingList.isNotEmpty
-                        ?  () async {
-                          await _controller.buyBooks();
-                          setState(() {});
-                        }
-                        :  null,
-                        child: const Text('Buy Books'),
-                      ),
-                    ],
+            :  null,
+            child: const Text('Buy Books'),
+          ),
+        ],
+      )
+    );
+  }
+
+  Widget _buildSortBar() {
+      return Padding(
+        padding: const EdgeInsets.all(9.0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).primaryColorLight,
+              width: .75,
+            ) 
+          ),
+          child: DropdownButtonHideUnderline( 
+            child: DropdownButton<String>(
+              value: dropdownValue,
+              style: TextStyle(
+                fontSize: 13, 
+                color: Theme.of(context).primaryColorLight, 
+                fontWeight: FontWeight.w300
+              ),
+              onChanged: (String? value) {
+                setState(() {
+                  dropdownValue = value!;
+                  _sort(_controller.shoppingList, value);
+                });
+              },
+          
+              /// INTERNAL MENU
+              items: sortList.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 13, color: Theme.of(context).primaryColorLight),
                   ),
-                ),
-              );
-            }
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-      ),
+                );
+              }).toList(), 
+            ),
+          ),
+        ),
     );
   }
 

@@ -18,7 +18,6 @@ const List<String> sortList = <String>[
 ];
 
 class _HomePageState extends State<HomePage> {
-  List<Book> shoppingList = [];
   List<Book> searchedBooks = [];
   final TextEditingController searchController = TextEditingController();
   String dropdownValue = sortList.first;

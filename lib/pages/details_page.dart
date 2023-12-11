@@ -152,7 +152,9 @@ class _DetailsPageState extends State<DetailsPage> {
                             ShoppingBook(
                               isbn13: widget.book.isbn13,
                               price: widget.book.price,
-                              title: widget.book.title
+                              title: widget.book.title,
+                              rating: widget.book.rating,
+                              reviewCount: widget.book.reviewCount
                             )
                           );
                         },

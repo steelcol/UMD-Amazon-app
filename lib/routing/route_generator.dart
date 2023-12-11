@@ -40,7 +40,7 @@ class RouteNavigator {
       case shopping: 
         return MaterialPageRoute<ShoppingPage>(
           builder: (context) =>
-            const ShoppingPage()
+            ShoppingPage()
         ); 
       case details:
         BookArgs args = settings.arguments as BookArgs;
