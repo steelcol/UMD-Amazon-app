@@ -1,4 +1,3 @@
-import 'package:beta_books/args/video_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:beta_books/routing/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
@@ -24,15 +23,12 @@ class RouteNavigator {
         return MaterialPageRoute<HomePage>(
           builder: (context) =>
             const HomePage()
-        ); 
+        );
       case videos:
-        VideoArguments args = settings.arguments as VideoArguments;
         return MaterialPageRoute<VideosPage>(
-          builder: (context) =>
-            VideosPage(
-              videoURL: args.videoURL,
-            )
-        ); 
+            builder: (context) =>
+            const VideosPage()
+        );
       case calendar:
         return MaterialPageRoute<CalendarPage>(
           builder: (context) =>

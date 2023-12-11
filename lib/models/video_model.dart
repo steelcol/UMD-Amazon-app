@@ -1,7 +1,5 @@
 class Video {
-  String videoURL;
+  final String videoURL;
 
-  Video ({
-    required this.videoURL,
-  });
+  Video({required this.videoURL});
 }
