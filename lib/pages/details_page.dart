@@ -202,18 +202,20 @@ class _DetailsPageState extends State<DetailsPage> {
                   }).toList(),
                 ),
                 TextButton(onPressed: createReview, child: Text(createText)),
-                SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 10,
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: reviews.length,
-                      itemBuilder: (context, index) {
-                        return _buildEventCard(index);
-                      },
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 10,
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: reviews.length,
+                        itemBuilder: (context, index) {
+                          return _buildEventCard(index);
+                        },
+                      ),
                     ),
                   ),
                 ),
