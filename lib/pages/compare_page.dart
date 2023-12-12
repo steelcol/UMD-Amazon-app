@@ -2,7 +2,6 @@ import 'package:beta_books/inherited/books_inherited.dart';
 import 'package:beta_books/models/book_model.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
-
 class ComparePage extends StatefulWidget {
   const ComparePage({Key? key, required this.book}) : super(key: key);
 
@@ -148,7 +147,7 @@ class _ComparePageState extends State<ComparePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Padding( 
+                Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 20
                   ),
@@ -200,7 +199,7 @@ class _ComparePageState extends State<ComparePage> {
               child: ListView.builder(
                 itemCount: relatedBooks.length,
                 itemBuilder: (context, index) {
-                  return bookCard(index); 
+                  return bookCard(index);
                 },
                 scrollDirection: Axis.horizontal,
               ),
@@ -211,7 +210,7 @@ class _ComparePageState extends State<ComparePage> {
     );
   }
   Widget bookCard(index) {
-    return SizedBox( 
+    return SizedBox(
       height: MediaQuery.of(context).size.height / 6,
       width: MediaQuery.of(context).size.width / 4,
       child: InkWell(
@@ -238,4 +237,3 @@ class _ComparePageState extends State<ComparePage> {
     );
   }
 }
-
