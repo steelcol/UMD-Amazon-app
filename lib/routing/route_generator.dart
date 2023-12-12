@@ -21,13 +21,13 @@ class RouteNavigator {
         return MaterialPageRoute<HomePage>(
           builder: (context) =>
             const HomePage()
-        ); 
-      case videos: 
+        );
+      case videos:
         return MaterialPageRoute<VideosPage>(
-          builder: (context) =>
+            builder: (context) =>
             const VideosPage()
-        ); 
-      case calendar: 
+        );
+      case calendar:
         return MaterialPageRoute<CalendarPage>(
           builder: (context) =>
             const CalendarPage()
