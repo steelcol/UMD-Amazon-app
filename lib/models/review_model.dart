@@ -1,6 +1,6 @@
 class Review {
   final String? review;
-  final double score;
+  final String? score;
 
   Review({
     required this.review,
